@@ -450,7 +450,7 @@ npx tsc --noEmit
 ```
 Expected: no errors
 
-- [ ] **Step 5: Manual smoke test**
+- [x] **Step 5: Manual smoke test**
 
 Start the dev server:
 ```
@@ -479,6 +479,6 @@ git commit -m "feat: add authenticated route group and placeholder home"
 - [x] All unit tests pass: `npm run test`
 - [x] TypeScript clean: `npx tsc --noEmit`
 - [x] Lint clean: `npm run lint`
-- [ ] Manual smoke test complete (all 5 flows above)
+- [x] Manual smoke test complete (all 5 flows above)
 - [x] Update `CLAUDE.md` build status table: Module 3 → ✅ Done
 - [x] Check off Module 3 tasks in `docs/superpowers/plans/2026-09-16-showtime-implementation.md`
