@@ -1,0 +1,6 @@
+-- Run this once after creating both user accounts in the Supabase Auth dashboard.
+-- Replace the UUIDs with the real user IDs from: Dashboard → Authentication → Users
+--
+-- INSERT INTO public.allowed_users (id) VALUES
+--   ('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'),  -- user 1
+--   ('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');  -- user 2
