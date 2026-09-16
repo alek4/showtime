@@ -75,7 +75,7 @@ NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable key from dashboard → Settings → API>
 ```
 
-- [ ] **Step 3: Commit Supabase init files**
+- [x] **Step 3: Commit Supabase init files**
 
 ```bash
 git add supabase/config.toml supabase/.gitignore
@@ -92,7 +92,7 @@ git commit -m "init: add Supabase project config"
 **Interfaces:**
 - Produces: tables `allowed_users`, `titles`, `user_title_meta` in the `public` schema
 
-- [ ] **Step 1: Write the schema migration**
+- [x] **Step 1: Write the schema migration**
 
 Create `supabase/migrations/20260916000001_schema.sql`:
 ```sql
@@ -133,13 +133,13 @@ CREATE TABLE public.user_title_meta (
 );
 ```
 
-- [ ] **Step 4: Apply migration via Supabase dashboard**
+- [x] **Step 4: Apply migration via Supabase dashboard**
 
 Open Supabase dashboard → SQL Editor → New query. Paste the contents of `supabase/migrations/20260916000001_schema.sql` and run it.
 
 Expected: query runs without errors. Check Table Editor — `allowed_users`, `titles`, `user_title_meta` should all appear.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add supabase/migrations/20260916000001_schema.sql
@@ -156,7 +156,7 @@ git commit -m "feat: add database schema migration"
 **Interfaces:**
 - Produces: RLS enabled on all three tables; anon role cannot access any table; authenticated users not in `allowed_users` cannot access `titles`
 
-- [ ] **Step 1: Write the RLS migration**
+- [x] **Step 1: Write the RLS migration**
 
 Create `supabase/migrations/20260916000002_rls.sql`:
 ```sql
@@ -190,13 +190,13 @@ CREATE POLICY "user_title_meta_update" ON public.user_title_meta
   FOR UPDATE USING (auth.uid() = user_id);
 ```
 
-- [ ] **Step 4: Apply migration via Supabase dashboard**
+- [x] **Step 4: Apply migration via Supabase dashboard**
 
 Open SQL Editor → New query. Paste the contents of `supabase/migrations/20260916000002_rls.sql` and run it.
 
 Expected: no errors. Check Authentication → Policies — 7 policies should appear across the 3 tables.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add supabase/migrations/20260916000002_rls.sql
@@ -213,7 +213,7 @@ git commit -m "feat: add RLS policies for titles and user_title_meta"
 **Interfaces:**
 - Produces: documented template for inserting the two `allowed_users` rows
 
-- [ ] **Step 1: Create seed.sql**
+- [x] **Step 1: Create seed.sql**
 
 ```sql
 -- Run this once after creating both user accounts in the Supabase Auth dashboard.
@@ -224,7 +224,7 @@ git commit -m "feat: add RLS policies for titles and user_title_meta"
 --   ('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx');  -- user 2
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add supabase/seed.sql
@@ -235,11 +235,11 @@ git commit -m "docs: add seed.sql template for allowed_users setup"
 
 ## Task 5: Final verification
 
-- [ ] **Step 1: Verify in Supabase dashboard**
+- [x] **Step 1: Verify in Supabase dashboard**
 
 Open Table Editor — confirm `allowed_users`, `titles`, `user_title_meta` all appear with correct columns. Open Authentication → Policies — confirm 7 policies exist across the 3 tables.
 
-- [ ] **Step 2: Run npm test to confirm no regressions**
+- [x] **Step 2: Run npm test to confirm no regressions**
 
 ```bash
 npm run test
