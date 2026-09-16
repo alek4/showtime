@@ -27,6 +27,8 @@ Implementation plan: `docs/superpowers/plans/2026-09-16-showtime-implementation.
 - **`cross-env`** added as dev dep — required for Windows-compatible env var syntax in npm scripts.
 - **`lib/supabase/server.ts` `createClient()` is `async`** — Next.js 15 requires `await cookies()`. All Server Components must `await createClient()`.
 - **Test files** live in `lib/__tests__/` for now (co-location with source files starts in Module 4+).
+- **Hosted Supabase** — local Supabase (`supabase start`) skipped due to Docker Desktop issues. Using a cloud Supabase project for all development and production. Migrations applied via SQL Editor in the Supabase dashboard; `supabase test db` (pgTAP) is not used.
+- **`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`** — Supabase renamed the anon key. All client code references this name instead of `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 
 ---
 
