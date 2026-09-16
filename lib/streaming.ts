@@ -1,19 +1,30 @@
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-// Shape of one streaming option inside the API response's IT array
+// Shape of one streaming option in the v4 API response
 export type StreamingPlatform = {
-  service: string           // e.g. "netflix", "prime", "disney"
-  streamingType: 'subscription' | 'rent' | 'buy' | 'free' | string
+  service: {
+    id: string        // e.g. "netflix", "prime", "disney"
+    name: string
+    homePage: string
+    themeColorCode: string
+    imageSet: Record<string, string>
+  }
+  type: 'subscription' | 'rent' | 'buy' | 'free' | string
   link: string
   quality?: string
+  price?: { amount: string; currency: string; formatted: string }
+  availableSince?: number
 }
 
-// Shape of the raw v3 API response — stored as-is in titles.streaming_data
+// Shape of the raw v4 API response — stored as-is in titles.streaming_data
 export type StreamingApiResponse = {
-  result?: {
-    streamingInfo?: {
-      it?: StreamingPlatform[]
-    }
+  itemType?: string
+  showType?: string
+  id?: string
+  tmdbId?: number
+  streamingOptions?: {
+    it?: StreamingPlatform[]
+    [country: string]: StreamingPlatform[] | undefined
   }
 }
 
@@ -44,13 +55,12 @@ export function isCacheStale(cachedAt: string | null): boolean {
 }
 
 /**
- * Builds the Streaming Availability API v3 URL for a given TMDB movie ID.
+ * Builds the Streaming Availability API v4 URL for a given TMDB movie ID.
  * Always targets Italy. API key is NOT included — added as a header by the route.
  */
 export function buildStreamingUrl(tmdbId: number): string {
   const params = new URLSearchParams()
-  params.set('output_language', 'en')
-  params.set('tmdb_id', `movie/${tmdbId}`)
   params.set('country', 'it')
-  return `https://streaming-availability.p.rapidapi.com/get?${params.toString()}`
+  params.set('output_language', 'en')
+  return `https://streaming-availability.p.rapidapi.com/shows/movie/${tmdbId}?${params.toString()}`
 }

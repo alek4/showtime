@@ -22,9 +22,9 @@ describe('isCacheStale', () => {
 })
 
 describe('buildStreamingUrl', () => {
-  it('includes the tmdb_id in movie/{id} format', () => {
+  it('includes the tmdb_id in the URL path', () => {
     const url = buildStreamingUrl(238)
-    expect(url).toContain('movie%2F238')
+    expect(url).toContain('/shows/movie/238')
   })
 
   it('always targets Italy (country=it)', () => {
