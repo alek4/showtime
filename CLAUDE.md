@@ -13,7 +13,7 @@ Implementation plan: `docs/superpowers/plans/2026-09-16-showtime-implementation.
 | 2 — DB Schema + RLS | ✅ Done | Hosted Supabase (Docker skipped); migrations applied via `supabase db push`; `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` |
 | 3 — Auth | ✅ Done | `/login` page, middleware, `(app)` route group; `feat/module-3-auth` branch |
 | 4 — TMDB API Route | ✅ Done | `/api/tmdb` proxy route; `TMDB_API_KEY` uses Read Access Token (Bearer); `feat/module-4-tmdb-api-route` branch |
-| 5 — Streaming API Route | ⬜ Not started | |
+| 5 — Streaming API Route | ✅ Done | `/api/streaming/[tmdb_id]` route; Streaming Availability API v4 (not v3); `feat/module-5-streaming-api-route` branch |
 | 6 — Data Layer | ⬜ Not started | |
 | 7 — Search & Add | ⬜ Not started | |
 | 8 — Watchlist Home | ⬜ Not started | |
