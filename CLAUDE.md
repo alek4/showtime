@@ -144,6 +144,7 @@ Framework: **Vitest**
 
 ## Git
 
+- Each module is implemented on a feature branch: `feat/module-N-<name>` (e.g. `feat/module-3-auth`).
 - Commit after each green test.
 - Short imperative subject line (`add watch time calculation`, `fix genre unnest query`).
 - Do not add co-author lines to commits.
