@@ -11,7 +11,7 @@ Implementation plan: `docs/superpowers/plans/2026-09-16-showtime-implementation.
 |---|---|---|
 | 1 — Scaffold | ✅ Done | Tailwind 4 (not 3); `cross-env` for Windows test scripts; `@theme` in CSS instead of `tailwind.config.ts` |
 | 2 — DB Schema + RLS | ✅ Done | Hosted Supabase (Docker skipped); migrations applied via `supabase db push`; `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` |
-| 3 — Auth | ⬜ Not started | |
+| 3 — Auth | ✅ Done | `/login` page, middleware, `(app)` route group; `feat/module-3-auth` branch |
 | 4 — TMDB API Route | ⬜ Not started | |
 | 5 — Streaming API Route | ⬜ Not started | |
 | 6 — Data Layer | ⬜ Not started | |
