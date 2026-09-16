@@ -11,7 +11,7 @@ vi.mock('@supabase/ssr', () => ({
 describe('lib/supabase/client', () => {
   beforeEach(() => {
     vi.stubEnv('NEXT_PUBLIC_SUPABASE_URL', 'https://test.supabase.co')
-    vi.stubEnv('NEXT_PUBLIC_SUPABASE_ANON_KEY', 'test-anon-key')
+    vi.stubEnv('NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY', 'test-anon-key')
     mockCreateBrowserClient.mockClear()
     vi.resetModules()
   })
