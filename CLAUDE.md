@@ -3,6 +3,30 @@
 Private shared movie watchlist for two users. Next.js 15 + Tailwind + Supabase + Vercel.
 
 Full spec: `docs/superpowers/specs/2026-09-16-showtime-design.md`
+Implementation plan: `docs/superpowers/plans/2026-09-16-showtime-implementation.md`
+
+## Build Status
+
+| Module | Status | Notes |
+|---|---|---|
+| 1 — Scaffold | ✅ Done | Tailwind 4 (not 3); `cross-env` for Windows test scripts; `@theme` in CSS instead of `tailwind.config.ts` |
+| 2 — DB Schema + RLS | ⬜ Not started | |
+| 3 — Auth | ⬜ Not started | |
+| 4 — TMDB API Route | ⬜ Not started | |
+| 5 — Streaming API Route | ⬜ Not started | |
+| 6 — Data Layer | ⬜ Not started | |
+| 7 — Search & Add | ⬜ Not started | |
+| 8 — Watchlist Home | ⬜ Not started | |
+| 9 — Title Detail | ⬜ Not started | |
+| 10 — Random Picker | ⬜ Not started | |
+| 11 — Stats | ⬜ Not started | |
+| 12 — Settings + Nav | ⬜ Not started | |
+
+### Key deviations from plan
+- **Tailwind 4** was installed by create-next-app (not Tailwind 3). Config lives in `app/globals.css` `@theme` block, no `tailwind.config.ts`.
+- **`cross-env`** added as dev dep — required for Windows-compatible env var syntax in npm scripts.
+- **`lib/supabase/server.ts` `createClient()` is `async`** — Next.js 15 requires `await cookies()`. All Server Components must `await createClient()`.
+- **Test files** live in `lib/__tests__/` for now (co-location with source files starts in Module 4+).
 
 ---
 
