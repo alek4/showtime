@@ -7,8 +7,8 @@
     "build": "next build --turbopack",
     "start": "next start",
     "lint": "eslint",
-    "test": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run",
-    "test:watch": "VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest"
+    "test": "cross-env VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest run",
+    "test:watch": "cross-env VITE_CONFIG_NATIVE_IGNORE_WARNING=true vitest"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
@@ -26,6 +26,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitejs/plugin-react": "^6.1.1",
+    "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.25",
     "jsdom": "^30.0.1",
