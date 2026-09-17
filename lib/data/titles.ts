@@ -46,3 +46,39 @@ export async function addTitle(input: NewTitle): Promise<Title> {
   if (error) throw error
   return data
 }
+
+export async function softDeleteTitle(id: string): Promise<void> {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('titles')
+    .update({ removed_at: new Date().toISOString() })
+    .eq('id', id)
+  if (error) throw error
+}
+
+export async function markWatched(id: string, watchedAt?: string): Promise<void> {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('titles')
+    .update({ watched: true, watched_at: watchedAt ?? new Date().toISOString() })
+    .eq('id', id)
+  if (error) throw error
+}
+
+export async function unmarkWatched(id: string): Promise<void> {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('titles')
+    .update({ watched: false, watched_at: null })
+    .eq('id', id)
+  if (error) throw error
+}
+
+export async function updateRuntime(id: string, runtimeMinutes: number): Promise<void> {
+  const supabase = await createClient()
+  const { error } = await supabase
+    .from('titles')
+    .update({ runtime_minutes: runtimeMinutes })
+    .eq('id', id)
+  if (error) throw error
+}

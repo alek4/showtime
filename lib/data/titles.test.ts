@@ -3,7 +3,10 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 vi.mock('@/lib/supabase/server', () => ({ createClient: vi.fn() }))
 
 import { createClient } from '@/lib/supabase/server'
-import { buildLetterboxdUrl, getTitles, getTitleById, addTitle } from './titles'
+import {
+  buildLetterboxdUrl, getTitles, getTitleById, addTitle,
+  softDeleteTitle, markWatched, unmarkWatched, updateRuntime,
+} from './titles'
 
 describe('buildLetterboxdUrl', () => {
   it('encodes spaces as + between words', () => {
@@ -113,5 +116,83 @@ describe('addTitle', () => {
 
     expect(insert).toHaveBeenCalledWith(expect.objectContaining({ watched: false }))
     expect(result).toEqual(savedTitle)
+  })
+})
+
+function makeMutationMock() {
+  const eq = vi.fn().mockResolvedValue({ error: null })
+  const update = vi.fn().mockReturnValue({ eq })
+  const from = vi.fn().mockReturnValue({ update })
+  return { from, update, eq }
+}
+
+describe('softDeleteTitle', () => {
+  afterEach(() => vi.clearAllMocks())
+
+  it('sets removed_at to a timestamp — does NOT call delete', async () => {
+    const mock = makeMutationMock()
+    vi.mocked(createClient).mockResolvedValue({ from: mock.from } as never)
+
+    await softDeleteTitle('title-uuid')
+
+    expect(mock.update).toHaveBeenCalledWith(
+      expect.objectContaining({ removed_at: expect.any(String) })
+    )
+    const call = mock.update.mock.calls[0][0] as { removed_at: string }
+    expect(() => new Date(call.removed_at)).not.toThrow()
+  })
+})
+
+describe('markWatched', () => {
+  afterEach(() => vi.clearAllMocks())
+
+  it('sets watched: true and watched_at to now when no date supplied', async () => {
+    const mock = makeMutationMock()
+    vi.mocked(createClient).mockResolvedValue({ from: mock.from } as never)
+
+    await markWatched('title-uuid')
+
+    expect(mock.update).toHaveBeenCalledWith(
+      expect.objectContaining({ watched: true, watched_at: expect.any(String) })
+    )
+  })
+
+  it('uses the supplied watchedAt date when provided', async () => {
+    const mock = makeMutationMock()
+    vi.mocked(createClient).mockResolvedValue({ from: mock.from } as never)
+
+    const date = '2026-01-15T20:00:00Z'
+    await markWatched('title-uuid', date)
+
+    expect(mock.update).toHaveBeenCalledWith(
+      expect.objectContaining({ watched: true, watched_at: date })
+    )
+  })
+})
+
+describe('unmarkWatched', () => {
+  afterEach(() => vi.clearAllMocks())
+
+  it('sets watched: false and clears watched_at to null', async () => {
+    const mock = makeMutationMock()
+    vi.mocked(createClient).mockResolvedValue({ from: mock.from } as never)
+
+    await unmarkWatched('title-uuid')
+
+    expect(mock.update).toHaveBeenCalledWith({ watched: false, watched_at: null })
+  })
+})
+
+describe('updateRuntime', () => {
+  afterEach(() => vi.clearAllMocks())
+
+  it('updates only runtime_minutes', async () => {
+    const mock = makeMutationMock()
+    vi.mocked(createClient).mockResolvedValue({ from: mock.from } as never)
+
+    await updateRuntime('title-uuid', 142)
+
+    expect(mock.update).toHaveBeenCalledWith({ runtime_minutes: 142 })
+    expect(mock.eq).toHaveBeenCalledWith('id', 'title-uuid')
   })
 })
