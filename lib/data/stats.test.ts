@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { computeRuntimeTotal, computeGenreBreakdown } from './stats'
+import { computeRuntimeTotal, computeGenreBreakdown, computeMonthlyTimeline } from './stats'
 
 describe('computeRuntimeTotal', () => {
   it('sums runtime and returns hasGaps false when all titles have runtime', () => {
@@ -52,5 +52,31 @@ describe('computeGenreBreakdown', () => {
     ])
     expect(result[0].genre).toBe('Drama')
     expect(result[0].count).toBe(2)
+  })
+})
+
+describe('computeMonthlyTimeline', () => {
+  it('groups titles by YYYY-MM month and sorts ascending', () => {
+    const result = computeMonthlyTimeline([
+      { watched_at: '2026-02-10T10:00:00Z' },
+      { watched_at: '2026-01-15T10:00:00Z' },
+      { watched_at: '2026-01-20T10:00:00Z' },
+    ])
+    expect(result).toEqual([
+      { month: '2026-01', count: 2 },
+      { month: '2026-02', count: 1 },
+    ])
+  })
+
+  it('skips titles with null watched_at', () => {
+    const result = computeMonthlyTimeline([
+      { watched_at: null },
+      { watched_at: '2026-03-01T00:00:00Z' },
+    ])
+    expect(result).toEqual([{ month: '2026-03', count: 1 }])
+  })
+
+  it('returns empty array for no titles', () => {
+    expect(computeMonthlyTimeline([])).toEqual([])
   })
 })

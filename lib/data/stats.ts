@@ -30,3 +30,17 @@ export function computeGenreBreakdown(
     .map(([genre, count]) => ({ genre, count }))
     .sort((a, b) => b.count - a.count)
 }
+
+export function computeMonthlyTimeline(
+  titles: Array<{ watched_at: string | null }>
+): Array<{ month: string; count: number }> {
+  const counts: Record<string, number> = {}
+  for (const t of titles) {
+    if (!t.watched_at) continue
+    const month = t.watched_at.slice(0, 7)  // "YYYY-MM"
+    counts[month] = (counts[month] ?? 0) + 1
+  }
+  return Object.entries(counts)
+    .map(([month, count]) => ({ month, count }))
+    .sort((a, b) => a.month.localeCompare(b.month))
+}
