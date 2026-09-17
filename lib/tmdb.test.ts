@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { buildTmdbUrl, tmdbPosterUrl } from './tmdb'
+import { buildTmdbUrl, tmdbPosterUrl, genreIdsToNames } from './tmdb'
 
 describe('buildTmdbUrl', () => {
   it('search: builds URL with encoded query', () => {
@@ -53,5 +53,19 @@ describe('tmdbPosterUrl', () => {
 
   it('returns null for null input', () => {
     expect(tmdbPosterUrl(null)).toBeNull()
+  })
+})
+
+describe('genreIdsToNames', () => {
+  it('maps known genre IDs to their names', () => {
+    expect(genreIdsToNames([18, 80])).toEqual(['Drama', 'Crime'])
+  })
+
+  it('filters out unknown genre IDs', () => {
+    expect(genreIdsToNames([18, 99999])).toEqual(['Drama'])
+  })
+
+  it('returns empty array for empty input', () => {
+    expect(genreIdsToNames([])).toEqual([])
   })
 })
