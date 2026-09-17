@@ -14,7 +14,7 @@ Implementation plan: `docs/superpowers/plans/2026-09-16-showtime-implementation.
 | 3 — Auth | ✅ Done | `/login` page, middleware, `(app)` route group; `feat/module-3-auth` branch |
 | 4 — TMDB API Route | ✅ Done | `/api/tmdb` proxy route; `TMDB_API_KEY` uses Read Access Token (Bearer); `feat/module-4-tmdb-api-route` branch |
 | 5 — Streaming API Route | ✅ Done | `/api/streaming/[tmdb_id]` route; Streaming Availability API v4 (not v3); `feat/module-5-streaming-api-route` branch |
-| 6 — Data Layer | ⬜ Not started | |
+| 6 — Data Layer | ✅ Done | `lib/types.ts`, `lib/data/titles.ts`, `lib/data/user-meta.ts`, `lib/data/stats.ts`; pure helpers unit-tested without mocks; Supabase functions mocked via `vi.mock`; `feat/module-6-data-layer` branch |
 | 7 — Search & Add | ⬜ Not started | |
 | 8 — Watchlist Home | ⬜ Not started | |
 | 9 — Title Detail | ⬜ Not started | |

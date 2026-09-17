@@ -127,7 +127,7 @@
 
 ---
 
-### Module 6: Titles Data Layer
+### Module 6: Titles Data Layer ✅
 
 **Delivers:** Typed Supabase query functions for all title and user-meta operations. No UI yet — just the data layer.
 
