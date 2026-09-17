@@ -16,7 +16,7 @@ Implementation plan: `docs/superpowers/plans/2026-09-16-showtime-implementation.
 | 5 — Streaming API Route | ✅ Done | `/api/streaming/[tmdb_id]` route; Streaming Availability API v4 (not v3); `feat/module-5-streaming-api-route` branch |
 | 6 — Data Layer | ✅ Done | `lib/types.ts`, `lib/data/titles.ts`, `lib/data/user-meta.ts`, `lib/data/stats.ts`; pure helpers unit-tested without mocks; Supabase functions mocked via `vi.mock`; `feat/module-6-data-layer` branch |
 | 7 — Search & Add | ✅ Done | `/search` page; `genreIdsToNames` + `TMDB_GENRE_MAP` in `lib/tmdb.ts`; `addTitleAction` server action; `SearchResultCard`, `SearchClient`; 72 tests passing; `feat/module-7-search-and-add` branch |
-| 8 — Watchlist Home | ⬜ Not started | |
+| 8 — Watchlist Home | ✅ Done | `/` home page; `WatchlistClient` + `Shelf` + `PosterCard` + `FilterBar`; `getAllUserMeta`, `getItPlatforms`, `applyFilters`, `deriveFilterOptions`; 91 tests passing; `feat/module-8-watchlist-home` branch |
 | 9 — Title Detail | ⬜ Not started | |
 | 10 — Random Picker | ⬜ Not started | |
 | 11 — Stats | ⬜ Not started | |
