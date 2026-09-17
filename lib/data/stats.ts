@@ -16,3 +16,17 @@ export function computeRuntimeTotal(
   }
   return { minutes, hasGaps }
 }
+
+export function computeGenreBreakdown(
+  titles: Array<{ genres: string[] }>
+): Array<{ genre: string; count: number }> {
+  const counts: Record<string, number> = {}
+  for (const t of titles) {
+    for (const g of t.genres) {
+      counts[g] = (counts[g] ?? 0) + 1
+    }
+  }
+  return Object.entries(counts)
+    .map(([genre, count]) => ({ genre, count }))
+    .sort((a, b) => b.count - a.count)
+}
