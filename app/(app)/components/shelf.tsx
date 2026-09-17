@@ -15,7 +15,7 @@ export function Shelf({ label, titles, metaMap, emptyMessage = 'Nothing here yet
       {titles.length === 0 ? (
         <p className="font-accent italic text-ghost text-sm px-4 opacity-60">{emptyMessage}</p>
       ) : (
-        <div className="flex gap-4 overflow-x-auto pb-4 px-4 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <div className="flex gap-4 overflow-x-auto py-2 pb-4 px-4 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {titles.map(title => (
             <div key={title.id} className="snap-start shrink-0">
               <PosterCard title={title} meta={metaMap[title.id] ?? null} />
