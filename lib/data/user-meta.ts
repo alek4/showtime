@@ -41,3 +41,13 @@ export async function getUserMeta(
   if (error) throw error
   return data
 }
+
+export async function getAllUserMeta(userId: string): Promise<UserMeta[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('user_title_meta')
+    .select('*')
+    .eq('user_id', userId)
+  if (error) throw error
+  return data ?? []
+}

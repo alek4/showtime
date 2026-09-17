@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { isCacheStale, buildStreamingUrl } from './streaming'
+import { isCacheStale, buildStreamingUrl, getItPlatforms } from './streaming'
+import type { StreamingApiResponse } from './streaming'
 
 describe('isCacheStale', () => {
   it('returns true for null cachedAt', () => {
@@ -29,5 +30,36 @@ describe('buildStreamingUrl', () => {
 
   it('always targets Italy (country=it)', () => {
     expect(buildStreamingUrl(238)).toContain('country=it')
+  })
+})
+
+describe('getItPlatforms', () => {
+  it('returns Italy streaming options when present', () => {
+    const data: StreamingApiResponse = {
+      streamingOptions: {
+        it: [
+          {
+            service: { id: 'netflix', name: 'Netflix', homePage: '', themeColorCode: '', imageSet: {} },
+            type: 'subscription',
+            link: 'https://netflix.com',
+          },
+        ],
+      },
+    }
+    const result = getItPlatforms(data)
+    expect(result).toHaveLength(1)
+    expect(result[0].service.id).toBe('netflix')
+  })
+
+  it('returns empty array for null streaming data', () => {
+    expect(getItPlatforms(null)).toEqual([])
+  })
+
+  it('returns empty array when it key is absent', () => {
+    expect(getItPlatforms({ streamingOptions: {} })).toEqual([])
+  })
+
+  it('returns empty array when streamingOptions is absent', () => {
+    expect(getItPlatforms({})).toEqual([])
   })
 })

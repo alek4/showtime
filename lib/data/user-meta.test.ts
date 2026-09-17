@@ -3,7 +3,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 vi.mock('@/lib/supabase/server', () => ({ createClient: vi.fn() }))
 
 import { createClient } from '@/lib/supabase/server'
-import { upsertUserMeta, getUserMeta } from './user-meta'
+import { upsertUserMeta, getUserMeta, getAllUserMeta } from './user-meta'
 
 describe('upsertUserMeta', () => {
   afterEach(() => vi.clearAllMocks())
@@ -87,5 +87,46 @@ describe('getUserMeta', () => {
     const result = await getUserMeta('user-1', 'title-1')
 
     expect(result).toBeNull()
+  })
+})
+
+describe('getAllUserMeta', () => {
+  afterEach(() => vi.clearAllMocks())
+
+  it('returns all meta rows for a given user', async () => {
+    const mockMeta = [
+      { user_id: 'u1', title_id: 't1', want_to_watch: true, rating: 4, note: null, rated_at: null },
+      { user_id: 'u1', title_id: 't2', want_to_watch: false, rating: null, note: null, rated_at: null },
+    ]
+    const eq = vi.fn().mockResolvedValue({ data: mockMeta, error: null })
+    const select = vi.fn().mockReturnValue({ eq })
+    const from = vi.fn().mockReturnValue({ select })
+    vi.mocked(createClient).mockResolvedValue({ from } as never)
+
+    const result = await getAllUserMeta('u1')
+
+    expect(result).toEqual(mockMeta)
+    expect(from).toHaveBeenCalledWith('user_title_meta')
+    expect(eq).toHaveBeenCalledWith('user_id', 'u1')
+  })
+
+  it('returns empty array when no meta exists', async () => {
+    const eq = vi.fn().mockResolvedValue({ data: null, error: null })
+    const select = vi.fn().mockReturnValue({ eq })
+    const from = vi.fn().mockReturnValue({ select })
+    vi.mocked(createClient).mockResolvedValue({ from } as never)
+
+    const result = await getAllUserMeta('u1')
+
+    expect(result).toEqual([])
+  })
+
+  it('throws when Supabase returns an error', async () => {
+    const eq = vi.fn().mockResolvedValue({ data: null, error: new Error('db error') })
+    const select = vi.fn().mockReturnValue({ eq })
+    const from = vi.fn().mockReturnValue({ select })
+    vi.mocked(createClient).mockResolvedValue({ from } as never)
+
+    await expect(getAllUserMeta('u1')).rejects.toThrow('db error')
   })
 })
