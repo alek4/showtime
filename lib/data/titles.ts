@@ -33,3 +33,16 @@ export async function getTitleById(id: string): Promise<Title | null> {
   if (error) throw error
   return data
 }
+
+// ─── Mutations ────────────────────────────────────────────────────────────────
+
+export async function addTitle(input: NewTitle): Promise<Title> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('titles')
+    .insert({ ...input, watched: false })
+    .select()
+    .single()
+  if (error) throw error
+  return data
+}

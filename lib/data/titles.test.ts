@@ -3,7 +3,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 vi.mock('@/lib/supabase/server', () => ({ createClient: vi.fn() }))
 
 import { createClient } from '@/lib/supabase/server'
-import { buildLetterboxdUrl, getTitles, getTitleById } from './titles'
+import { buildLetterboxdUrl, getTitles, getTitleById, addTitle } from './titles'
 
 describe('buildLetterboxdUrl', () => {
   it('encodes spaces as + between words', () => {
@@ -83,5 +83,35 @@ describe('getTitleById', () => {
     const result = await getTitleById('non-existent')
 
     expect(result).toBeNull()
+  })
+})
+
+describe('addTitle', () => {
+  afterEach(() => vi.clearAllMocks())
+
+  it('inserts the title with watched: false and returns the saved row', async () => {
+    const input = {
+      tmdb_id: 238,
+      title: 'The Godfather',
+      year: 1972,
+      poster_url: '/poster.jpg',
+      runtime_minutes: 175,
+      genres: ['Drama', 'Crime'],
+      overview: 'The aging patriarch...',
+      letterboxd_search_url: 'https://letterboxd.com/search/films/The+Godfather+1972',
+      added_by: 'user-uuid-123',
+    }
+    const savedTitle = { ...input, id: 'new-uuid', watched: false, added_at: '2026-09-17T10:00:00Z' }
+
+    const single = vi.fn().mockResolvedValue({ data: savedTitle, error: null })
+    const selectAfterInsert = vi.fn().mockReturnValue({ single })
+    const insert = vi.fn().mockReturnValue({ select: selectAfterInsert })
+    const from = vi.fn().mockReturnValue({ insert })
+    vi.mocked(createClient).mockResolvedValue({ from } as never)
+
+    const result = await addTitle(input)
+
+    expect(insert).toHaveBeenCalledWith(expect.objectContaining({ watched: false }))
+    expect(result).toEqual(savedTitle)
   })
 })
