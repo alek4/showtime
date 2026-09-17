@@ -1,3 +1,4 @@
+import { createClient } from '@/lib/supabase/server'
 import type { RuntimeTotal, WatchStats } from '@/lib/types'
 
 // ─── Pure helpers ─────────────────────────────────────────────────────────────
@@ -43,4 +44,26 @@ export function computeMonthlyTimeline(
   return Object.entries(counts)
     .map(([month, count]) => ({ month, count }))
     .sort((a, b) => a.month.localeCompare(b.month))
+}
+
+// ─── DB query ─────────────────────────────────────────────────────────────────
+
+export async function getWatchStats(): Promise<WatchStats> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('titles')
+    .select('genres, runtime_minutes, watched, watched_at')
+    .is('removed_at', null)
+  if (error) throw error
+
+  const titles = data ?? []
+  const watched = titles.filter(t => t.watched)
+
+  return {
+    totalWatched: watched.length,
+    backlog: titles.length - watched.length,
+    totalRuntime: computeRuntimeTotal(watched),
+    genreBreakdown: computeGenreBreakdown(watched),
+    monthlyTimeline: computeMonthlyTimeline(watched),
+  }
 }

@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { computeRuntimeTotal, computeGenreBreakdown, computeMonthlyTimeline } from './stats'
+
+vi.mock('@/lib/supabase/server', () => ({ createClient: vi.fn() }))
+
+import { createClient } from '@/lib/supabase/server'
+import { computeRuntimeTotal, computeGenreBreakdown, computeMonthlyTimeline, getWatchStats } from './stats'
 
 describe('computeRuntimeTotal', () => {
   it('sums runtime and returns hasGaps false when all titles have runtime', () => {
@@ -78,5 +82,48 @@ describe('computeMonthlyTimeline', () => {
 
   it('returns empty array for no titles', () => {
     expect(computeMonthlyTimeline([])).toEqual([])
+  })
+})
+
+describe('getWatchStats', () => {
+  afterEach(() => vi.clearAllMocks())
+
+  it('returns correct totals, runtime, genre breakdown, and monthly timeline', async () => {
+    const mockTitles = [
+      { genres: ['Drama', 'Crime'], runtime_minutes: 175, watched: true, watched_at: '2026-01-15T10:00:00Z' },
+      { genres: ['Drama'], runtime_minutes: 120, watched: true, watched_at: '2026-02-10T10:00:00Z' },
+      { genres: ['Comedy'], runtime_minutes: null, watched: true, watched_at: '2026-02-20T10:00:00Z' },
+      { genres: ['Action'], runtime_minutes: 100, watched: false, watched_at: null },
+    ]
+
+    const is = vi.fn().mockResolvedValue({ data: mockTitles, error: null })
+    const select = vi.fn().mockReturnValue({ is })
+    const from = vi.fn().mockReturnValue({ select })
+    vi.mocked(createClient).mockResolvedValue({ from } as never)
+
+    const stats = await getWatchStats()
+
+    expect(stats.totalWatched).toBe(3)
+    expect(stats.backlog).toBe(1)
+    expect(stats.totalRuntime).toEqual({ minutes: 295, hasGaps: true })
+
+    const drama = stats.genreBreakdown.find(g => g.genre === 'Drama')
+    const crime = stats.genreBreakdown.find(g => g.genre === 'Crime')
+    expect(drama?.count).toBe(2)
+    expect(crime?.count).toBe(1)
+
+    expect(stats.monthlyTimeline).toContainEqual({ month: '2026-01', count: 1 })
+    expect(stats.monthlyTimeline).toContainEqual({ month: '2026-02', count: 2 })
+  })
+
+  it('filters removed_at IS NULL before computing stats', async () => {
+    const is = vi.fn().mockResolvedValue({ data: [], error: null })
+    const select = vi.fn().mockReturnValue({ is })
+    const from = vi.fn().mockReturnValue({ select })
+    vi.mocked(createClient).mockResolvedValue({ from } as never)
+
+    await getWatchStats()
+
+    expect(is).toHaveBeenCalledWith('removed_at', null)
   })
 })
