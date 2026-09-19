@@ -17,6 +17,7 @@ export function RuntimeInput({ titleId }: Props) {
     if (!Number.isInteger(minutes) || minutes <= 0) return
     startTransition(async () => {
       await updateRuntimeAction(titleId, minutes)
+      setValue('')
     })
   }
 

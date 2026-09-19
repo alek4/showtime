@@ -36,7 +36,7 @@ export function WatchedToggle({ titleId, initialWatched, watchedAt }: Props) {
         disabled={isPending}
         className={`font-body text-sm px-4 py-2 rounded min-h-[44px] transition-colors disabled:opacity-40 ${
           optimisticWatched
-            ? 'bg-red-dim text-primary hover:bg-red/20'
+            ? 'bg-crimson-dim text-primary hover:bg-crimson-dim/80'
             : 'bg-amber text-void hover:bg-amber-dim'
         }`}
       >
