@@ -24,13 +24,13 @@ export function WantToWatchToggle({ titleId, initialValue }: Props) {
     <button
       onClick={handleToggle}
       disabled={isPending}
-      className={`font-body text-sm px-4 py-2 rounded min-h-[44px] transition-colors disabled:opacity-40 ${
+      className={`inline-flex items-center gap-2 font-body text-sm px-4 py-2 rounded-full min-h-[44px] self-start transition-colors disabled:opacity-40 ${
         optimistic
-          ? 'bg-amber text-void'
-          : 'bg-surface text-secondary border border-rim hover:border-amber/50'
+          ? 'bg-amber/15 text-amber border border-amber/40'
+          : 'text-ghost border border-rim hover:text-secondary hover:border-secondary/60'
       }`}
     >
-      {isPending ? 'Saving…' : optimistic ? '★ Want to watch' : '+ Want to watch'}
+      {isPending ? '…' : optimistic ? '♥ In my list' : '♡ Want to watch'}
     </button>
   )
 }

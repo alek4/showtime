@@ -4,7 +4,7 @@ import { createClient } from '@/lib/supabase/server'
 import { getTitleById } from '@/lib/data/titles'
 import { getUserMeta } from '@/lib/data/user-meta'
 import { refreshStreamingIfStale } from '@/lib/data/streaming-cache'
-import { isCacheStale, getItPlatforms, PLATFORM_COLORS } from '@/lib/streaming'
+import { isCacheStale, getItPlatforms, PLATFORM_COLORS, type StreamingPlatform } from '@/lib/streaming'
 import { WatchedToggle } from './watched-toggle'
 import { WantToWatchToggle } from './want-to-watch-toggle'
 import { RatingInput } from './rating-input'
@@ -37,6 +37,30 @@ export default async function TitleDetailPage({ params }: Props) {
   const userMeta = await getUserMeta(user.id, title.id)
   const platforms = getItPlatforms(streamingData)
 
+  // Deduplicate: one badge per service, prefer subscription > free > rent > buy
+  const typeRank: Record<string, number> = { subscription: 0, free: 1, rent: 2, buy: 3 }
+  type UniqueP = { platform: StreamingPlatform; note: string | null }
+  const uniquePlatforms: UniqueP[] = Object.values(
+    platforms.reduce<Record<string, { best: StreamingPlatform; types: Set<string> }>>((acc, p) => {
+      const id = p.service.id
+      if (!acc[id]) {
+        acc[id] = { best: p, types: new Set([p.type]) }
+      } else {
+        acc[id].types.add(p.type)
+        if ((typeRank[p.type] ?? 99) < (typeRank[acc[id].best.type] ?? 99)) acc[id].best = p
+      }
+      return acc
+    }, {})
+  ).map(({ best, types }) => {
+    const hasSub = types.has('subscription') || types.has('free')
+    const note = hasSub ? null
+      : types.has('rent') && types.has('buy') ? 'rent / buy'
+      : types.has('rent') ? 'to rent'
+      : types.has('buy') ? 'to buy'
+      : null
+    return { platform: best, note }
+  })
+
   const runtimeHours = title.runtime_minutes ? Math.floor(title.runtime_minutes / 60) : 0
   const runtimeMins = title.runtime_minutes ? title.runtime_minutes % 60 : 0
   const runtimeDisplay = title.runtime_minutes
@@ -49,59 +73,60 @@ export default async function TitleDetailPage({ params }: Props) {
 
   return (
     <main className="bg-void min-h-screen pb-24">
-      {/* Poster hero — fills top 50vh on mobile */}
-      <div className="relative w-full h-[50vh]">
-        {title.watched && (
-          <div className="absolute top-0 inset-x-0 h-1 bg-red-600 z-10" />
-        )}
-        {title.poster_url ? (
-          <Image
-            src={title.poster_url}
-            alt={title.title}
-            fill
-            className="object-cover object-top"
-            sizes="100vw"
-            priority
-          />
-        ) : (
-          <div className="absolute inset-0 bg-surface" />
-        )}
-        {/* Gradient bleed into void background */}
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-void to-transparent" />
-      </div>
+      <div className="max-w-2xl mx-auto">
+        {/* Poster hero */}
+        <div className="relative w-full h-[50vh] overflow-hidden">
+          {title.watched && (
+            <div className="absolute top-0 inset-x-0 h-1 bg-red-600 z-10" />
+          )}
+          {title.poster_url ? (
+            <Image
+              src={title.poster_url}
+              alt={title.title}
+              fill
+              className="object-cover object-top"
+              sizes="(min-width: 672px) 672px, 100vw"
+              priority
+            />
+          ) : (
+            <div className="absolute inset-0 bg-surface" />
+          )}
+          {/* Gradient bleed into void background */}
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-void to-transparent" />
+        </div>
 
-      {/* Content */}
-      <div className="px-4 pt-4">
-        <h1 className="font-display text-4xl tracking-wide text-primary leading-tight">
-          {title.title}
-        </h1>
-        <p className="font-body text-sm text-secondary mt-1">
-          {title.year}
-          {runtimeDisplay && ` · ${runtimeDisplay}`}
-          {title.genres.length > 0 && ` · ${title.genres.join(', ')}`}
-        </p>
-
-        {/* Streaming badges */}
-        {platforms.length > 0 ? (
-          <div className="flex flex-wrap gap-1.5 mt-3">
-            {platforms.map(p => {
-              const colors = PLATFORM_COLORS[p.service.id]
-              if (!colors) return null
-              return (
-                <span
-                  key={p.service.id}
-                  className={`font-body text-xs px-2 py-1 rounded text-primary ${colors.tailwindBg}`}
-                >
-                  {colors.label}
-                </span>
-              )
-            })}
-          </div>
-        ) : (
-          <p className="font-body text-sm text-secondary mt-3">
-            No streaming info available for Italy
+        {/* Content */}
+        <div className="px-4 pt-4">
+          <h1 className="font-display text-4xl tracking-wide text-primary leading-tight">
+            {title.title}
+          </h1>
+          <p className="font-body text-sm text-secondary mt-1">
+            {title.year}
+            {runtimeDisplay && ` · ${runtimeDisplay}`}
+            {title.genres.length > 0 && ` · ${title.genres.join(', ')}`}
           </p>
-        )}
+
+          {/* Streaming badges */}
+          {uniquePlatforms.length > 0 ? (
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              {uniquePlatforms.map(({ platform: p, note }) => {
+                const colors = PLATFORM_COLORS[p.service.id]
+                if (!colors) return null
+                return (
+                  <span
+                    key={p.service.id}
+                    className={`font-body text-xs px-2 py-1 rounded text-primary ${colors.tailwindBg}`}
+                  >
+                    {colors.label}{note ? ` · ${note}` : ''}
+                  </span>
+                )
+              })}
+            </div>
+          ) : (
+            <p className="font-body text-sm text-secondary mt-3">
+              No streaming info available for Italy
+            </p>
+          )}
 
         {/* Letterboxd search link */}
         <a
@@ -165,16 +190,17 @@ export default async function TitleDetailPage({ params }: Props) {
           </div>
         )}
 
-        {/* Soft-delete */}
-        <div className="mt-8 border-t border-rim pt-4">
-          <form action={deleteWithId}>
-            <button
-              type="submit"
-              className="font-body text-sm text-crimson px-4 py-2 rounded border border-crimson-dim min-h-[44px] hover:bg-crimson-dim/20 transition-colors"
-            >
-              Remove from list
-            </button>
-          </form>
+          {/* Soft-delete */}
+          <div className="mt-8 border-t border-rim pt-4">
+            <form action={deleteWithId}>
+              <button
+                type="submit"
+                className="font-body text-sm text-crimson px-4 py-2 rounded border border-crimson-dim min-h-[44px] hover:bg-crimson-dim/20 transition-colors"
+              >
+                Remove from list
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </main>

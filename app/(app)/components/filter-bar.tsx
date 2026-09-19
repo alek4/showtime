@@ -55,7 +55,7 @@ export function FilterBar({ filters, options, onChange }: FilterBarProps) {
           {(['all', 'unwatched', 'watched'] as const).map(s => (
             <Chip
               key={s}
-              label={s === 'all' ? 'All' : s === 'unwatched' ? 'Unwatched' : 'Watched'}
+              label={s === 'all' ? 'All' : s === 'unwatched' ? 'Want to watch' : 'Watched'}
               active={filters.status === s}
               onClick={() => setStatus(s)}
             />

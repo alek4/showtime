@@ -26,7 +26,7 @@ export function WatchlistClient({ titles, metaMap, currentUserId }: Props) {
       <div className="mt-4">
         {(filters.status === 'all' || filters.status === 'unwatched') && (
           <Shelf
-            label="Unwatched"
+            label="Want to watch"
             titles={unwatched}
             metaMap={metaMap}
             emptyMessage="Your queue is clear."

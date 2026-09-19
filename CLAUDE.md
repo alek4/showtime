@@ -30,6 +30,9 @@ Implementation plan: `docs/superpowers/plans/2026-09-16-showtime-implementation.
 - **Hosted Supabase** — local Supabase (`supabase start`) skipped due to Docker Desktop issues. Using a cloud Supabase project for all development and production. Migrations applied via SQL Editor in the Supabase dashboard; `supabase test db` (pgTAP) is not used.
 - **`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`** — Supabase renamed the anon key. All client code references this name instead of `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 - **Color tokens** — The theme uses `bg-rim`/`border-rim` (not `border-border`), `bg-crimson`/`bg-crimson-dim` (not `bg-red-*`). No `--color-border` or `--color-red-dim` exist.
+- **`user_title_meta.rating` is `numeric(2,1)`** — migrated from `integer` to support half-star ratings (0.5–5.0). Constraint: `rating >= 0.5 AND rating <= 5.0`. Values are stored as-is (4.5, 3.0, etc.), not multiplied.
+- **`addTitleAction` un-deletes soft-deleted titles** — on `tmdb_id` conflict, if `removed_at` is set, clears it and refreshes all TMDB metadata (including `poster_url`). Sets `want_to_watch = true` for the adding user on every fresh add or un-delete.
+- **`deduplicatePlatforms`** — helper in `lib/streaming.ts` that deduplicates streaming entries by `service.id`, preferring subscription > free > rent > buy. Used in `PosterCard` (home shelf) and `page.tsx` (detail page).
 
 ---
 

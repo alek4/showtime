@@ -58,6 +58,19 @@ export function getItPlatforms(data: StreamingApiResponse | null): StreamingPlat
   return data?.streamingOptions?.it ?? []
 }
 
+// Returns one entry per service, preferring subscription > free > rent > buy.
+export function deduplicatePlatforms(platforms: StreamingPlatform[]): StreamingPlatform[] {
+  const typeRank: Record<string, number> = { subscription: 0, free: 1, rent: 2, buy: 3 }
+  const best = new Map<string, StreamingPlatform>()
+  for (const p of platforms) {
+    const existing = best.get(p.service.id)
+    if (!existing || (typeRank[p.type] ?? 99) < (typeRank[existing.type] ?? 99)) {
+      best.set(p.service.id, p)
+    }
+  }
+  return [...best.values()]
+}
+
 /**
  * Builds the Streaming Availability API v4 URL for a given TMDB movie ID.
  * Always targets Italy. API key is NOT included — added as a header by the route.

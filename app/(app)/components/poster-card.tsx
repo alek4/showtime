@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { getItPlatforms, PLATFORM_COLORS } from '@/lib/streaming'
+import { getItPlatforms, deduplicatePlatforms, PLATFORM_COLORS } from '@/lib/streaming'
 import type { Title, UserMeta } from '@/lib/types'
 
 type PosterCardProps = {
@@ -9,7 +9,7 @@ type PosterCardProps = {
 }
 
 export function PosterCard({ title, meta }: PosterCardProps) {
-  const platforms = getItPlatforms(title.streaming_data).slice(0, 2)
+  const platforms = deduplicatePlatforms(getItPlatforms(title.streaming_data)).slice(0, 2)
   const wantsToWatch = meta?.want_to_watch === true
 
   return (
@@ -39,7 +39,7 @@ export function PosterCard({ title, meta }: PosterCardProps) {
           {title.genres.slice(0, 2).map(genre => (
             <span
               key={genre}
-              className="font-body text-xs bg-void/80 text-ghost px-1.5 py-0.5 rounded leading-tight"
+              className="font-body text-xs bg-void/80 text-primary px-1.5 py-0.5 rounded leading-tight"
             >
               {genre}
             </span>
