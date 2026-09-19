@@ -18,7 +18,7 @@ Implementation plan: `docs/superpowers/plans/2026-09-16-showtime-implementation.
 | 7 — Search & Add | ✅ Done | `/search` page; `genreIdsToNames` + `TMDB_GENRE_MAP` in `lib/tmdb.ts`; `addTitleAction` server action; `SearchResultCard`, `SearchClient`; 72 tests passing; `feat/module-7-search-and-add` branch |
 | 8 — Watchlist Home | ✅ Done | `/` home page; `WatchlistClient` + `Shelf` + `PosterCard` + `FilterBar`; `getAllUserMeta`, `getItPlatforms`, `applyFilters`, `deriveFilterOptions`; 91 tests passing; `feat/module-8-watchlist-home` branch |
 | 9 — Title Detail | ✅ Done | `/titles/[id]`; `refreshStreamingIfStale` helper; `WatchedToggle`, `WantToWatchToggle`, `RatingInput`, `NoteInput`, `RuntimeInput`; 95 tests passing; `feat/module-9-title-detail` branch |
-| 10 — Random Picker | ⬜ Not started | |
+| 10 — Random Picker | ✅ Done | `/discover` page; `PickerClient` with watchlist + TMDB modes; `filterWatchlistTitles`, `pickRandom`, `TMDB_PROVIDER_MAP` in `lib/picker.ts`; Letterboxd fallback link; 106 tests passing |
 | 11 — Stats | ⬜ Not started | |
 | 12 — Settings + Nav | ⬜ Not started | |
 
