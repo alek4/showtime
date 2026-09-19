@@ -37,8 +37,12 @@ export default async function TitleDetailPage({ params }: Props) {
   const userMeta = await getUserMeta(user.id, title.id)
   const platforms = getItPlatforms(streamingData)
 
+  const runtimeHours = title.runtime_minutes ? Math.floor(title.runtime_minutes / 60) : 0
+  const runtimeMins = title.runtime_minutes ? title.runtime_minutes % 60 : 0
   const runtimeDisplay = title.runtime_minutes
-    ? `${Math.floor(title.runtime_minutes / 60)}h ${title.runtime_minutes % 60}m`
+    ? runtimeMins > 0
+      ? `${runtimeHours}h ${runtimeMins}m`
+      : `${runtimeHours}h`
     : null
 
   const deleteWithId = softDeleteAction.bind(null, title.id)
@@ -119,7 +123,7 @@ export default async function TitleDetailPage({ params }: Props) {
         </div>
 
         {/* Per-user section */}
-        <div className="mt-6 flex flex-col gap-4 border-t border-border pt-4">
+        <div className="mt-6 flex flex-col gap-4 border-t border-rim pt-4">
           <WantToWatchToggle
             titleId={title.id}
             initialValue={userMeta?.want_to_watch ?? false}
@@ -144,7 +148,7 @@ export default async function TitleDetailPage({ params }: Props) {
 
         {/* Overview */}
         {title.overview && (
-          <div className="mt-6 border-t border-border pt-4">
+          <div className="mt-6 border-t border-rim pt-4">
             <p className="font-body text-sm text-secondary leading-relaxed">
               {title.overview}
             </p>
@@ -153,7 +157,7 @@ export default async function TitleDetailPage({ params }: Props) {
 
         {/* Runtime input — only shown when runtime_minutes is null */}
         {title.runtime_minutes === null && (
-          <div className="mt-6 border-t border-border pt-4">
+          <div className="mt-6 border-t border-rim pt-4">
             <p className="font-body text-xs text-secondary mb-2">
               Runtime not available — add manually
             </p>
@@ -162,11 +166,11 @@ export default async function TitleDetailPage({ params }: Props) {
         )}
 
         {/* Soft-delete */}
-        <div className="mt-8 border-t border-border pt-4">
+        <div className="mt-8 border-t border-rim pt-4">
           <form action={deleteWithId}>
             <button
               type="submit"
-              className="font-body text-sm text-red-400 px-4 py-2 rounded border border-red-dim min-h-[44px] hover:bg-red-dim/20 transition-colors"
+              className="font-body text-sm text-crimson px-4 py-2 rounded border border-crimson-dim min-h-[44px] hover:bg-crimson-dim/20 transition-colors"
             >
               Remove from list
             </button>

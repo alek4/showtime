@@ -27,7 +27,7 @@ export function WantToWatchToggle({ titleId, initialValue }: Props) {
       className={`font-body text-sm px-4 py-2 rounded min-h-[44px] transition-colors disabled:opacity-40 ${
         optimistic
           ? 'bg-amber text-void'
-          : 'bg-surface text-secondary border border-border hover:border-amber/50'
+          : 'bg-surface text-secondary border border-rim hover:border-amber/50'
       }`}
     >
       {isPending ? 'Saving…' : optimistic ? '★ Want to watch' : '+ Want to watch'}

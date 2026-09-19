@@ -43,6 +43,7 @@ export async function upsertMetaAction(
   } = await supabase.auth.getUser()
   if (!user) throw new Error('Not authenticated')
   const result = await upsertUserMeta(user.id, titleId, updates)
+  revalidatePath('/titles/[id]', 'page')
   revalidatePath('/')
   return result
 }

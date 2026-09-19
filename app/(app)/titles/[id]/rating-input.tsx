@@ -28,7 +28,7 @@ export function RatingInput({ titleId, initialRating }: Props) {
           onClick={() => handleRate(star)}
           disabled={isPending}
           aria-label={`Rate ${star} star${star > 1 ? 's' : ''}`}
-          className="text-3xl leading-none disabled:opacity-40 transition-colors"
+          className="text-3xl leading-none min-h-[44px] min-w-[44px] disabled:opacity-40 transition-colors"
         >
           <span
             className={

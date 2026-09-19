@@ -29,7 +29,7 @@ export function NoteInput({ titleId, initialNote }: Props) {
         onBlur={handleBlur}
         placeholder="Add a note…"
         rows={3}
-        className="w-full bg-surface text-primary font-body text-sm rounded px-3 py-2 resize-none placeholder:text-ghost focus:outline-none focus:ring-1 focus:ring-amber/50"
+        className="w-full bg-surface text-primary font-body text-sm rounded px-3 py-2 min-h-[44px] resize-none placeholder:text-ghost focus:outline-none focus:ring-1 focus:ring-amber/50"
       />
       {isPending && (
         <span className="absolute bottom-2 right-2 font-body text-xs text-secondary">
