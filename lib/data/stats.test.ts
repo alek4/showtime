@@ -3,7 +3,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 vi.mock('@/lib/supabase/server', () => ({ createClient: vi.fn() }))
 
 import { createClient } from '@/lib/supabase/server'
-import { computeRuntimeTotal, computeGenreBreakdown, computeMonthlyTimeline, getWatchStats } from './stats'
+import { computeRuntimeTotal, computeGenreBreakdown, computeMonthlyTimeline, getWatchStats, formatWatchTime } from './stats'
 
 describe('computeRuntimeTotal', () => {
   it('sums runtime and returns hasGaps false when all titles have runtime', () => {
@@ -125,5 +125,27 @@ describe('getWatchStats', () => {
     await getWatchStats()
 
     expect(is).toHaveBeenCalledWith('removed_at', null)
+  })
+})
+
+describe('formatWatchTime', () => {
+  it('formats hours and minutes from total minutes', () => {
+    expect(formatWatchTime(90, false)).toBe('1h 30m')
+  })
+
+  it('prefixes ~ when hasGaps is true', () => {
+    expect(formatWatchTime(90, true)).toBe('~1h 30m')
+  })
+
+  it('handles zero minutes', () => {
+    expect(formatWatchTime(0, false)).toBe('0h 0m')
+  })
+
+  it('handles exactly one hour', () => {
+    expect(formatWatchTime(60, false)).toBe('1h 0m')
+  })
+
+  it('handles large values', () => {
+    expect(formatWatchTime(142 * 60 + 30, false)).toBe('142h 30m')
   })
 })

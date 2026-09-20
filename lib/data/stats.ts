@@ -46,6 +46,13 @@ export function computeMonthlyTimeline(
     .sort((a, b) => a.month.localeCompare(b.month))
 }
 
+export function formatWatchTime(minutes: number, hasGaps: boolean): string {
+  const h = Math.floor(minutes / 60)
+  const m = minutes % 60
+  const formatted = `${h}h ${m}m`
+  return hasGaps ? `~${formatted}` : formatted
+}
+
 // ─── DB query ─────────────────────────────────────────────────────────────────
 
 export async function getWatchStats(): Promise<WatchStats> {
