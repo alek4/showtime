@@ -19,7 +19,7 @@ Implementation plan: `docs/superpowers/plans/2026-09-16-showtime-implementation.
 | 8 — Watchlist Home | ✅ Done | `/` home page; `WatchlistClient` + `Shelf` + `PosterCard` + `FilterBar`; `getAllUserMeta`, `getItPlatforms`, `applyFilters`, `deriveFilterOptions`; 91 tests passing; `feat/module-8-watchlist-home` branch |
 | 9 — Title Detail | ✅ Done | `/titles/[id]`; `refreshStreamingIfStale` helper; `WatchedToggle`, `WantToWatchToggle`, `RatingInput`, `NoteInput`, `RuntimeInput`; 95 tests passing; `feat/module-9-title-detail` branch |
 | 10 — Random Picker | ✅ Done | `/discover` page; `PickerClient` with watchlist + TMDB modes; `filterWatchlistTitles`, `pickRandom`, `TMDB_PROVIDER_MAP` in `lib/picker.ts`; Letterboxd fallback link; 106 tests passing |
-| 11 — Stats | ⬜ Not started | |
+| 11 — Stats | ✅ Done | `/stats` page; `formatWatchTime`, `fillTimelineGaps` helpers; `StatCard`, `GenreChart`, `TimelineChart`; Recharts; 115 tests passing; `feat/module-11-stats` branch |
 | 12 — Settings + Nav | ⬜ Not started | |
 
 ### Key deviations from plan
