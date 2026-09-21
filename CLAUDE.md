@@ -20,7 +20,7 @@ Implementation plan: `docs/superpowers/plans/2026-09-16-showtime-implementation.
 | 9 — Title Detail | ✅ Done | `/titles/[id]`; `refreshStreamingIfStale` helper; `WatchedToggle`, `WantToWatchToggle`, `RatingInput`, `NoteInput`, `RuntimeInput`; 95 tests passing; `feat/module-9-title-detail` branch |
 | 10 — Random Picker | ✅ Done | `/discover` page; `PickerClient` with watchlist + TMDB modes; `filterWatchlistTitles`, `pickRandom`, `TMDB_PROVIDER_MAP` in `lib/picker.ts`; Letterboxd fallback link; 106 tests passing |
 | 11 — Stats | ✅ Done | `/stats` page; `formatWatchTime`, `fillTimelineGaps` helpers; `StatCard`, `GenreChart`, `TimelineChart`; Recharts; 115 tests passing; `feat/module-11-stats` branch |
-| 12 — Settings + Nav | ⬜ Not started | |
+| 12 — Settings + Nav | ✅ Done | `/settings` page; `updateDisplayNameAction`, `signOutAction`; `BottomNav` with `isActiveRoute`; 118 tests passing; `feat/module-12-settings-nav` branch |
 
 ### Key deviations from plan
 - **Tailwind 4** was installed by create-next-app (not Tailwind 3). Config lives in `app/globals.css` `@theme` block, no `tailwind.config.ts`.
