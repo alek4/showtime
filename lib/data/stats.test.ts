@@ -3,7 +3,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest'
 vi.mock('@/lib/supabase/server', () => ({ createClient: vi.fn() }))
 
 import { createClient } from '@/lib/supabase/server'
-import { computeRuntimeTotal, computeGenreBreakdown, computeMonthlyTimeline, getWatchStats, formatWatchTime } from './stats'
+import { computeRuntimeTotal, computeGenreBreakdown, computeMonthlyTimeline, getWatchStats, formatWatchTime, fillTimelineGaps } from './stats'
 
 describe('computeRuntimeTotal', () => {
   it('sums runtime and returns hasGaps false when all titles have runtime', () => {
@@ -147,5 +147,40 @@ describe('formatWatchTime', () => {
 
   it('handles large values', () => {
     expect(formatWatchTime(142 * 60 + 30, false)).toBe('142h 30m')
+  })
+})
+
+describe('fillTimelineGaps', () => {
+  it('returns exactly 12 months ending at now', () => {
+    const now = new Date('2026-09-20')
+    const result = fillTimelineGaps([], now)
+    expect(result).toHaveLength(12)
+    expect(result[0].month).toBe('2025-10')
+    expect(result[11].month).toBe('2026-09')
+  })
+
+  it('fills months not in data with count 0', () => {
+    const now = new Date('2026-09-20')
+    const result = fillTimelineGaps([{ month: '2026-09', count: 3 }], now)
+    expect(result.find(r => r.month === '2026-09')?.count).toBe(3)
+    expect(result.find(r => r.month === '2026-08')?.count).toBe(0)
+  })
+
+  it('preserves counts for months present in data', () => {
+    const now = new Date('2026-09-20')
+    const data = [
+      { month: '2026-01', count: 5 },
+      { month: '2026-06', count: 2 },
+    ]
+    const result = fillTimelineGaps(data, now)
+    expect(result.find(r => r.month === '2026-01')?.count).toBe(5)
+    expect(result.find(r => r.month === '2026-06')?.count).toBe(2)
+  })
+
+  it('ignores data entries outside the 12-month window', () => {
+    const now = new Date('2026-09-20')
+    const data = [{ month: '2024-01', count: 99 }]
+    const result = fillTimelineGaps(data, now)
+    expect(result.find(r => r.month === '2024-01')).toBeUndefined()
   })
 })

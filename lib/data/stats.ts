@@ -53,6 +53,22 @@ export function formatWatchTime(minutes: number, hasGaps: boolean): string {
   return hasGaps ? `~${formatted}` : formatted
 }
 
+export function fillTimelineGaps(
+  data: Array<{ month: string; count: number }>,
+  now?: Date
+): Array<{ month: string; count: number }> {
+  const ref = now ?? new Date()
+  const months: string[] = []
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date(ref.getFullYear(), ref.getMonth() - i, 1)
+    months.push(
+      `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+    )
+  }
+  const lookup = Object.fromEntries(data.map(d => [d.month, d.count]))
+  return months.map(month => ({ month, count: lookup[month] ?? 0 }))
+}
+
 // ─── DB query ─────────────────────────────────────────────────────────────────
 
 export async function getWatchStats(): Promise<WatchStats> {
